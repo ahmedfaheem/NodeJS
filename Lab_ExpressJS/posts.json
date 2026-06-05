@@ -1,0 +1,33 @@
+
+[
+	{
+		"id": 1,
+		"userId": 1,
+		"title": "Getting started with Express",
+		"body": "A short dummy post for the Express lab."
+	},
+	{
+		"id": 2,
+		"userId": 2,
+		"title": "Working with routes",
+		"body": "This post demonstrates a basic route-backed resource."
+	},
+	{
+		"id": 3,
+		"userId": 3,
+		"title": "Reading and writing JSON",
+		"body": "The service layer can load and update JSON files directly."
+	},
+	{
+		"id": 4,
+		"userId": 1,
+		"title": "Creating dummy data",
+		"body": "Seed data helps test CRUD endpoints during development."
+	},
+	{
+		"id": 5,
+		"userId": 4,
+		"title": "Post storage example",
+		"body": "This is another sample post for local testing."
+	}
+]
