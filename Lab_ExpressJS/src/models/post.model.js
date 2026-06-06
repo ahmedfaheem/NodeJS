@@ -5,14 +5,15 @@ const postSchema = new mongoose.Schema({
         type: String,
          required: true,
          trim:true,
-         min:50,
+         min:10,
         },
     body: { 
         type: String, 
         required: true 
     },
     userId: { 
-        type: String, 
+        type: String,
+        length:24, 
         required: true,
         ref: "User"
     }

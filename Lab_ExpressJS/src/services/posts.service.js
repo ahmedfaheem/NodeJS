@@ -26,7 +26,7 @@ const createPost = async (_userId, _title, _body)=>{
 }
 
 const updatePostById = async (postId, title, body)=>{
-    const updatedPost = await postModel.findOneAndUpdate(postId, {title:title, body:body}, {new:true});
+    const updatedPost = await postModel.findOneAndUpdate({_id: postId}, {title:title, body:body}, {new:true});
         if(!updatedPost){
             return null;
         }
