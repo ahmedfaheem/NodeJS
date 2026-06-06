@@ -4,7 +4,7 @@ const app = express()
 const port = 3000
 const morgan = require('morgan');
 const relogger = require('./middlewares/relogger');
-
+const mongoose = require('mongoose');
 app.use(express.json());
 
 app.use(morgan('dev'));
@@ -69,5 +69,15 @@ app.use((err, req, res, next) => {
 //  })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
+
+  mongoose.connect('mongodb://localhost:27017/NodeJs_Lab').then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('Error connecting to MongoDB', err);
+});
+
+
 })
+
+
