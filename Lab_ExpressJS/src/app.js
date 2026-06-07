@@ -13,21 +13,21 @@ const hpp = require("hpp");
 const app = express();
 
 // middleware to parse JSON bodies
-app.use(express.json());
-app.use(morgan('dev'));
-app.use(helmet()); // sniffing
+app.use(express.json()); // input to json object
+app.use(morgan('dev')); // logger
+app.use(helmet()); // sniffing to ensure data and files type in headers
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,  //15 min
     max: 50, // request
     message: "Too many requests"
 }));
 app.use((req, res, next) => {
-    mongoSanitize.sanitize(req.body);
+    mongoSanitize.sanitize(req.body); // clean queries 
     mongoSanitize.sanitize(req.params);
     next();
 });
-app.use(xss()); // Cross Site Scripting (XSS)
-app.use(hpp());  //  HTTP Parameter Pollution -- ?page=1&page=999 -- deal with one only
+app.use(xss()); // Cross Site Scripting (XSS) -- ex-- js code  in post body
+app.use(hpp());  //  HTTP Parameter Pollution -- ?page=1&page=999 -- 1 or 99 deal with one only
 
 // define routes
 app.use("/users", usersRouter);
