@@ -3,12 +3,31 @@ const usersRouter = require("./routes/users.routes");
 const postsRouter = require("./routes/posts.routes");
 const errorHandlerMiddleware = require("./middlewares/errorHandler.middleware");
 const morgan = require("morgan");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const { xss } = require("express-xss-sanitizer");
+const hpp = require("hpp");
+
 
 const app = express();
 
 // middleware to parse JSON bodies
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(helmet()); // sniffing
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,  //15 min
+    max: 50, // request
+    message: "Too many requests"
+}));
+app.use((req, res, next) => {
+    mongoSanitize.sanitize(req.body);
+    mongoSanitize.sanitize(req.params);
+    next();
+});
+app.use(xss()); // Cross Site Scripting (XSS)
+app.use(hpp());  //  HTTP Parameter Pollution -- ?page=1&page=999 -- deal with one only
 
 // define routes
 app.use("/users", usersRouter);
