@@ -17,6 +17,20 @@ module.exports = (err, req, res, next) => {
         return res.status(400).json({ message: "Invalid ID format" });
     }
 
+        // JWT Expired
+    if (err.name === "TokenExpiredError") {
+        return res.status(401).json({
+            message: "Token expired, please login again"
+        });
+    }
+
+    // JWT Invalid
+    if (err.name === "JsonWebTokenError") {
+        return res.status(401).json({
+            message: "Invalid token"
+        });
+    }
+
     // custom errors
     if (err instanceof APIError) {
         return res.status(err.statusCode).json({

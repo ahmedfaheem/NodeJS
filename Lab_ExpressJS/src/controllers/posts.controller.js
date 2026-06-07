@@ -1,13 +1,17 @@
 const postService = require("../services/posts.service");
+const APIError = require("../utils/APIError");
 
 const getAllPosts = async (req, res) => {
-        const posts = await postService.getAllPosts();
+        const currentUserID = req.user.id;
+        const posts = await postService.getAllPosts(currentUserID);
         res.status(200).json(posts);
 }
 
 const getPostById = async (req, res) => {
     const id = req.params.id;
-    const post = await postService.getPostById(id);
+            const currentUserID = req.user.id;
+
+    const post = await postService.getPostById(id, currentUserID);
     if (!post) {
         return res.status(404).json({ message: "Post not found" });
     }
@@ -16,8 +20,8 @@ const getPostById = async (req, res) => {
 
 const createPost = async (req, res) => {
     
-    const { title, body,  userId } = req.body;
-    
+    const { title, body } = req.body;
+    const userId = req.user.id
     const newPost = await postService.createPost(userId, title, body);
     res.status(201).json(newPost);
     
@@ -25,7 +29,12 @@ const createPost = async (req, res) => {
 
 const updatePostById = async (req, res) => {
     const postId = req.params.id;
-    const { title, body } = req.body;
+    const { title, body } = req.body; 
+
+    const post = await  postService.getPostById(postId);
+    const currentUserID = req.user.id;
+    if(post.userId != currentUserID) throw new APIError("Forbidden", 403);
+
     const updatedPost = await postService.updatePostById(postId, title, body);
     if (!updatedPost) {
         return res.status(404).json({ message: "Post not found" });
@@ -35,6 +44,11 @@ const updatePostById = async (req, res) => {
 
 const deletePostById = async (req, res) => {
     const postId = req.params.id;
+
+    const post = await  postService.getPostById(postId);
+    const currentUserID = req.user.id;
+    if(post.userId != currentUserID) throw new APIError("Forbidden", 403);
+    
     const deletedPost = await postService.deletePostById(postId);
     if (!deletedPost) {
         return res.status(404).json({ message: "Post not found" });

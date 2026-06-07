@@ -6,13 +6,12 @@ const usersController = require("../controllers/users.controller");
 const usersRouter = Router();
 
 
-const validate = require("../middlewares/validate.middleware");
-const userCreateSchema =  require("../validators/users/create.user.validator");
-const userUpdateSchema =  require("../validators/users/update.user.validator");
-
+const {validate, auth, restrictTo} = require("../middlewares/index");
+const {signUpSchema, userUpdateSchema, signInSchema} = require("../validators/users/index");
 // /users
-usersRouter.post("/",validate(userCreateSchema), usersController.createUser);
-usersRouter.get("/", usersController.readUsers);
+usersRouter.post("/sign-up", validate(signUpSchema), usersController.createUser);
+usersRouter.post("/sign-in", validate(signInSchema), usersController.signIn);
+usersRouter.get("/", auth, restrictTo('admin'), usersController.readUsers);
 usersRouter.get("/:id", usersController.getUserById);
 usersRouter.put("/:id", validate(userUpdateSchema) ,usersController.updateUser);
 usersRouter.delete("/:id", usersController.deleteUser);

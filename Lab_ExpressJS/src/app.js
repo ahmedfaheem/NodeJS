@@ -2,17 +2,17 @@ const express = require("express");
 const usersRouter = require("./routes/users.routes");
 const postsRouter = require("./routes/posts.routes");
 const errorHandlerMiddleware = require("./middlewares/errorHandler.middleware");
-
+const morgan = require("morgan");
 
 const app = express();
 
 // middleware to parse JSON bodies
 app.use(express.json());
-
+app.use(morgan('dev'));
 
 // define routes
 app.use("/users", usersRouter);
-app.use("/posts", postsRouter);
+app.use("/posts", postsRouter); 
 
 // global error middleware
 app.use(errorHandlerMiddleware)

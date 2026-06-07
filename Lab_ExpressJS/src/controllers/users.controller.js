@@ -1,11 +1,41 @@
 const userService = require("../services/users.service");
+const APIError = require("../utils/APIError");
 
 
 const createUser = async (req, res) => {
-     console.log(req.body);
+    const user = await userService.getUserByEmail(req.body.email)
+    if(user){
+        throw  new APIError("Email Exists Before", 401);
+    }
     const newUser = await userService.createUser(req.body);
 
     res.status(201).json({ message: "user created successfully", data: newUser });
+}
+
+const signIn = async (req, res) => {
+    const user = await userService.getUserByEmail(req.body.email);
+
+    if (!user) {
+        throw new APIError("Invalid Email or Password", 401);
+    }
+
+    const isPasswordValid = await userService.isPasswordMatch(req.body.password, user.password);
+
+    if (!isPasswordValid) {
+        throw new APIError("Invalid Email or Password", 401);
+    }
+
+    const token = await userService.generateToken(user);
+
+    return res.status(200).json({
+        message: "user signed in successfully",
+        token,
+        data: {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        },
+    });
 }
 
 const readUsers = async (req, res) => {
@@ -50,5 +80,6 @@ module.exports = {
     readUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    signIn
 }

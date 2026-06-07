@@ -1,8 +1,13 @@
 const postModel = require("../models/post.model");
-const getAllPosts =async  () =>{
+const getAllPosts =async  (currentUserID) =>{
 
     const posts = await postModel.find();
-    return posts;
+    return posts.map(post=>{
+        return {
+            ...post.toObject(),
+            isOwner: currentUserID == post.userId
+        }
+    });
 }
 
 const writePost = async (post)=>{
@@ -11,8 +16,12 @@ const writePost = async (post)=>{
 }
 
 
-const getPostById = async (id) =>{
-    return  await postModel.findOne({_id: id});
+const getPostById = async (id, currentUserID) =>{
+    const post =   await postModel.findOne({_id: id});
+      return {
+        ...post.toObject(),
+        isOwner: currentUserID == post.userId
+      };
 }
 
 
