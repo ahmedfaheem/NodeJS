@@ -31,11 +31,14 @@ const generateToken = async (user)=>{
     // prepare data
     //console.log(user);
     const payload = {
+        id: (user._id).toString(),
         name: user.name,
         email:user.email,
         birthDate: user.birthDate,
         role: user.role
     }
+   
+
     const secretKey = process.env.JWT_SECRET;
 
     const options = {

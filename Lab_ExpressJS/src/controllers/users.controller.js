@@ -1,6 +1,6 @@
 const userService = require("../services/users.service");
 const APIError = require("../utils/APIError");
-
+const sendMail = require("../services/mail.service");
 
 const createUser = async (req, res) => {
     const user = await userService.getUserByEmail(req.body.email)
@@ -8,7 +8,13 @@ const createUser = async (req, res) => {
         throw  new APIError("Email Exists Before", 401);
     }
     const newUser = await userService.createUser(req.body);
-
+    const data = {
+        subject: `Welcome ${newUser.name} to Lab_ExpressJS`,
+        to: newUser.email, 
+        name: newUser.name,
+    }
+    sendMail(data, "register");
+    
     res.status(201).json({ message: "user created successfully", data: newUser });
 }
 
@@ -26,7 +32,7 @@ const signIn = async (req, res) => {
     }
 
     const token = await userService.generateToken(user);
-
+      
     return res.status(200).json({
         message: "user signed in successfully",
         token,

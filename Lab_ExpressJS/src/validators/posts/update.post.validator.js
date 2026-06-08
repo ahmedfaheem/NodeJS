@@ -21,5 +21,5 @@ const paramsSchema = Joi.object({
 
 module.exports = {
     body: UpdatePostSchema,
-    paeams: paramsSchema
+    params: paramsSchema
 }
